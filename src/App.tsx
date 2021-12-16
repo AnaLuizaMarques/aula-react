@@ -1,6 +1,6 @@
-import Routes_ from "./routes";
+import Routess from "./routes";
 function App() {
-  return <Routes_ />
+  return <Routess />
 }
 
 export default App;
