@@ -1,35 +1,39 @@
 import React, {useCallback, useState, FormEvent} from 'react';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { toast } from 'react-toastify';
+import Loader from '../../components/Loader';
 import { Container } from './style';
 import { api } from "../../services/api"
 import 'react-toastify/dist/ReactToastify.css';
 
 interface IData {
-  registro: string;
-  nome: string;
-  telefone: string;
+  name: string;
   email: string;
-  celular: string;
-  profissao: string;
-  senha: string;
+  password: string;
 }
 
 const SingUp: React.FC = () => {
   const [ data, setData ] = useState<IData>( {} as IData);
+  const [ load, setLoad ] = useState(false);
   const navigate = useNavigate()
+
   const handleSubmit = useCallback( (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    api.post('specialist', data).then (
+    setLoad(true)
+    api.post('users', data).then (
       response => {
         console.log(response.data);
-        toast.success('Cadastro realizado com sucesso!', {
+        toast.success('Cadastro realizado com sucesso! Você será redirecionado para página de login', {
           hideProgressBar: false,
           onClose: () => navigate('/signin')
         });
       }
-    )
-  }, [data, navigate]);
+    ).catch (e => { toast.error('Oops, algo deu errado')})
+    .finally(() => setLoad(false))
+  }, [data, navigate])
+  if (load) {
+    return <Loader/>
+  }
   return (
     <Container>
       <div className='card'>
@@ -37,18 +41,8 @@ const SingUp: React.FC = () => {
         <form onSubmit={ handleSubmit }>
           <input 
             type="text" 
-            placeholder='Informe seu registro'
-            onChange={ e => setData( { ...data, registro: e.target.value})}
-          />
-          <input 
-            type="text" 
-            placeholder='Informe seu primeiro nome'
-            onChange={ e => setData( { ...data, nome: e.target.value})}
-          />
-          <input 
-            type="text" 
-            placeholder='Informe seu telefone'
-            onChange={ e => setData( { ...data, telefone: e.target.value})}
+            placeholder='Informe seu nome'
+            onChange={ e => setData( { ...data, name: e.target.value})}
           />
           <input 
             type="text" 
@@ -56,19 +50,9 @@ const SingUp: React.FC = () => {
             onChange={ e => setData( { ...data, email: e.target.value})}
           />
           <input 
-            type="text" 
-            placeholder='Informe seu celular'
-            onChange={ e => setData( { ...data, celular: e.target.value})}
-          />
-          <input 
-            type="text" 
-            placeholder='Informe sua profissao'
-            onChange={ e => setData( { ...data, profissao: e.target.value})}
-          />
-          <input 
             type="password " 
             placeholder='Informe sua senha'
-            onChange={ e => setData( { ...data, senha: e.target.value})}
+            onChange={ e => setData( { ...data, password: e.target.value})}
           />
           <input 
             className='button' 
@@ -76,6 +60,7 @@ const SingUp: React.FC = () => {
             value='Enviar'
           />
         </form>
+        <Link to="/signin"> Já tem cadastro? Clique aqui para logar.</Link>
       </div>
     </Container>
   );
