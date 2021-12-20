@@ -12,10 +12,19 @@ export const Container = styled.div`
     max-width: 300px;
     padding: 22px;
     border-radius: 10px;
+    h5 {
+      font-family: 'Roboto', sans-serif;
+      text-align: center;
+      font-size: 20px;
+      color: #fff;
+
+    }
+
     form {
       display: grid;
       input {
-        margin: 10px 0 0;
+        margin: 10px 0 0 0;
+        width: 100%;
       }
     }
   }
